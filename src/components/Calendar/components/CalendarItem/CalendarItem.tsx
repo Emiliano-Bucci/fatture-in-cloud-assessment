@@ -19,7 +19,13 @@ export function CalendarItem({
   percentFill = 0.4,
 }: Props) {
   const percentFillStyles = useSpring({
-    y: percentFill,
+    from: {
+      y: 0,
+    },
+    to: {
+      y: percentFill,
+    },
+    delay: 240,
   });
   const styles = useSpring({
     opacity: isActive ? 1 : 0,
@@ -87,7 +93,7 @@ export function CalendarItem({
       />
       <animated.div
         style={{
-          scaleY: percentFillStyles.y.get(),
+          scaleY: percentFillStyles.y.to((v) => v),
         }}
         css={css`
           position: absolute;
