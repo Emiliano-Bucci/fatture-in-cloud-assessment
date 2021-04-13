@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { useState } from "react";
 import { CalendarHeader } from "./components/CalendarHeader";
 import { CalendarItem } from "./components/CalendarItem";
 
@@ -6,6 +7,7 @@ const amountFormater = new Intl.NumberFormat("it-IT", {
   style: "currency",
   currency: "EUR",
   maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
 });
 
 type Props = {
@@ -17,6 +19,16 @@ type Props = {
 };
 
 export function Calendar({ data }: Props) {
+  const [activeItems, setActiveItems] = useState<number[]>([]);
+
+  function removeActiveItem(i: number) {
+    setActiveItems((p) => p.filter((_i) => _i !== i));
+  }
+
+  function addActiveItem(i: number) {
+    setActiveItems((p) => [...p, i]);
+  }
+
   return (
     <div
       css={css`
@@ -39,13 +51,24 @@ export function Calendar({ data }: Props) {
           display: flex;
         `}
       >
-        {data.map(({ docs, amount, month }) => (
-          <CalendarItem
-            key={`${docs}-${amount}-${month}`}
-            docs={docs}
-            amount={amountFormater.format(amount)}
-          />
-        ))}
+        {data.map(({ docs, amount, month }, i) => {
+          const isActive = activeItems.includes(i);
+          return (
+            <CalendarItem
+              key={`${docs}-${amount}-${month}`}
+              docs={docs}
+              amount={amountFormater.format(amount)}
+              isActive={isActive}
+              onClick={() => {
+                if (isActive) {
+                  removeActiveItem(i);
+                } else {
+                  addActiveItem(i);
+                }
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
