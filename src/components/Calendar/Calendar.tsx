@@ -1,4 +1,6 @@
 import { css } from "@emotion/react";
+import { CalendarHeader } from "./components/CalendarHeader";
+import { CalendarItem } from "./components/CalendarItem";
 
 const amountFormater = new Intl.NumberFormat("it-IT", {
   style: "currency",
@@ -29,25 +31,7 @@ export function Calendar({ data }: Props) {
         `}
       >
         {data.map(({ month }) => (
-          <div
-            key={month}
-            css={css`
-              display: flex;
-              align-items: center;
-              font-size: 14px;
-              padding-left: 10px;
-              width: 98px;
-              border-bottom: 1px solid #ebedee;
-              color: #3197d5;
-              font-weight: 500;
-
-              :not(:last-of-type) {
-                border-right: 1px solid #ebedee;
-              }
-            `}
-          >
-            {month}
-          </div>
+          <CalendarHeader key={month} month={month} />
         ))}
       </header>
       <div
@@ -56,38 +40,11 @@ export function Calendar({ data }: Props) {
         `}
       >
         {data.map(({ docs, amount, month }) => (
-          <div
+          <CalendarItem
             key={`${docs}-${amount}-${month}`}
-            css={css`
-              display: grid;
-              align-content: end;
-              width: 98px;
-              padding: 10px;
-              height: 93px;
-              grid-gap: 4px;
-
-              :not(:last-of-type) {
-                border-right: 1px solid #ebedee;
-              }
-            `}
-          >
-            <span
-              css={css`
-                font-size: 14px;
-                color: #6f7e86;
-              `}
-            >
-              {docs} doc.
-            </span>
-            <span
-              css={css`
-                color: #26875a;
-                font-weight: 500;
-              `}
-            >
-              {amountFormater.format(amount)}
-            </span>
-          </div>
+            docs={docs}
+            amount={amountFormater.format(amount)}
+          />
         ))}
       </div>
     </div>
