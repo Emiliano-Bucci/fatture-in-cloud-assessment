@@ -1,18 +1,38 @@
 import { css } from "@emotion/react";
 import { useSpring } from "@react-spring/core";
 import { animated } from "@react-spring/web";
+import { useEffect } from "react";
 
 type Props = {
   docs: number;
   amount: string;
   isActive: boolean;
+  percentFill?: number;
   onClick(): void;
 };
 
-export function CalendarItem({ docs, amount, isActive, onClick }: Props) {
+export function CalendarItem({
+  docs,
+  amount,
+  isActive,
+  onClick,
+  percentFill = 0.4,
+}: Props) {
+  const percentFillStyles = useSpring({
+    y: percentFill,
+  });
   const styles = useSpring({
     opacity: isActive ? 1 : 0,
   });
+
+  useEffect(() => {
+    if (percentFill < 0 || percentFill > 1) {
+      throw new Error(
+        `percentFill should be a value between 0 and 1; currently is ${percentFill}`
+      );
+    }
+  }, [percentFill]);
+
   return (
     <div
       onClick={onClick}
@@ -25,6 +45,7 @@ export function CalendarItem({ docs, amount, isActive, onClick }: Props) {
         grid-gap: 4px;
         position: relative;
         cursor: pointer;
+        z-index: 10;
 
         :not(:last-of-type) {
           border-right: 1px solid #ebedee;
@@ -35,6 +56,8 @@ export function CalendarItem({ docs, amount, isActive, onClick }: Props) {
         css={css`
           font-size: 14px;
           color: #6f7e86;
+          z-index: 10;
+          position: relative;
         `}
       >
         {docs} doc.
@@ -43,11 +66,14 @@ export function CalendarItem({ docs, amount, isActive, onClick }: Props) {
         css={css`
           color: #26875a;
           font-weight: 500;
+          z-index: 10;
+          position: relative;
         `}
       >
         {amount}
       </span>
       <animated.div
+        style={styles}
         css={css`
           pointer-events: none;
           width: 100%;
@@ -56,8 +82,23 @@ export function CalendarItem({ docs, amount, isActive, onClick }: Props) {
           left: 0;
           position: absolute;
           background-color: #3197d5;
+          z-index: 10;
         `}
-        style={styles}
+      />
+      <animated.div
+        style={{
+          scaleY: percentFillStyles.y.get(),
+        }}
+        css={css`
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: #e0f1eb;
+          z-index: 0;
+          transform-origin: bottom;
+        `}
       />
     </div>
   );

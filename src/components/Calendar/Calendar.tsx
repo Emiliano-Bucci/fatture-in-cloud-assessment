@@ -29,11 +29,15 @@ export function Calendar({ data }: Props) {
     setActiveItems((p) => [...p, i]);
   }
 
+  const highestValue = Math.max(...data.map((v) => v.amount));
+
   return (
     <div
       css={css`
         background-color: #fff;
         border: 1px solid #ebedee;
+        box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.008),
+          0 22.3px 17.9px rgba(0, 0, 0, 0.012), 0 100px 80px rgba(0, 0, 0, 0.02);
       `}
     >
       <header
@@ -59,6 +63,7 @@ export function Calendar({ data }: Props) {
               docs={docs}
               amount={amountFormater.format(amount)}
               isActive={isActive}
+              percentFill={Number((amount / highestValue).toFixed(2))}
               onClick={() => {
                 if (isActive) {
                   removeActiveItem(i);
