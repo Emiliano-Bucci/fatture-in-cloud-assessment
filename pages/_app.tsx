@@ -1,11 +1,14 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { AppProps } from "next/dist/next-server/lib/router/router";
+import { Global } from "@emotion/react";
+import { globalStyles } from "theme/globalStyles";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
-    <Fragment>
+    <>
+      <Global styles={globalStyles} />
       <Component {...pageProps} />
-    </Fragment>
+    </>
   );
 };
 
