@@ -45,13 +45,14 @@ export function CalendarItem({
       css={css`
         display: grid;
         align-content: end;
-        width: 98px;
+        width: 80px;
         padding: 10px;
         height: 93px;
         grid-gap: 4px;
         position: relative;
         cursor: pointer;
         z-index: 10;
+        font-size: 12px;
 
         :not(:last-of-type) {
           border-right: 1px solid #ebedee;
@@ -60,7 +61,6 @@ export function CalendarItem({
     >
       <span
         css={css`
-          font-size: 14px;
           color: #6f7e86;
           z-index: 10;
           position: relative;
@@ -83,7 +83,7 @@ export function CalendarItem({
         css={css`
           pointer-events: none;
           width: 100%;
-          height: 4px;
+          height: 3px;
           top: 100%;
           left: 0;
           position: absolute;

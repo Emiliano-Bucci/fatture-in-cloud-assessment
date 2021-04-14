@@ -9,9 +9,11 @@ export function CalendarHeader({ month }: Props) {
       css={css`
         display: flex;
         align-items: center;
-        font-size: 14px;
+        font-size: 12px;
         padding-left: 10px;
-        width: 98px;
+        width: 80px;
+        padding: 6px 8px;
+        line-height: 17px;
         border-bottom: 1px solid #ebedee;
         color: #3197d5;
         font-weight: 500;

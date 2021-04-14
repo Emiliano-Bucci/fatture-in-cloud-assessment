@@ -22,6 +22,7 @@ type Data = {
 
 const Page = () => {
   const [data, setData] = useState<Data | null>(null);
+  const [error, setError] = useState(false);
   const [queryIsLoading, setQueryIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,9 +39,37 @@ const Page = () => {
         })
         .catch(() => {
           setQueryIsLoading(false);
+          setError(true);
         });
     }
   }, [data, queryIsLoading]);
+
+  function getContent() {
+    if (queryIsLoading) {
+      return <p>Loading...</p>;
+    }
+
+    if ((!queryIsLoading && !data) || !data) {
+      return <div>No data...</div>;
+    }
+
+    if (error) {
+      return <div>There was an error...</div>;
+    }
+
+    return (
+      <Calendar
+        data={data.mesi.map(({ documenti, importo }, i) => {
+          const month = dayjs().month(i).format("MMMM");
+          return {
+            month: upperaseFirstLetter(month),
+            docs: documenti,
+            amount: importo,
+          };
+        })}
+      />
+    );
+  }
 
   return (
     <div
@@ -50,20 +79,7 @@ const Page = () => {
         padding-top: 124px;
       `}
     >
-      {queryIsLoading && <p>Loading...</p>}
-      {!queryIsLoading && !data && <div>No data...</div>}
-      {!queryIsLoading && data && (
-        <Calendar
-          data={data.mesi.map(({ documenti, importo }, i) => {
-            const month = dayjs().month(i).format("MMMM");
-            return {
-              month: upperaseFirstLetter(month),
-              docs: documenti,
-              amount: importo,
-            };
-          })}
-        />
-      )}
+      {getContent()}
     </div>
   );
 };

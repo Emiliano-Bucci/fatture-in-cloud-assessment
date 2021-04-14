@@ -20,7 +20,8 @@ type Props = {
 
 const FilterSection: React.FC<{
   title: string;
-}> = ({ children, title }) => {
+  align?: "left" | "right";
+}> = ({ children, title, align = "left" }) => {
   return (
     <div
       css={css`
@@ -34,6 +35,11 @@ const FilterSection: React.FC<{
           font-size: 18px;
           border-bottom: 1px solid #ebedee;
           padding: 8px;
+
+          ${align === "right" &&
+          css`
+            text-align: right;
+          `}
         `}
       >
         {title}
@@ -44,6 +50,11 @@ const FilterSection: React.FC<{
           grid-gap: 4px;
           padding: 8px;
           padding-top: 0;
+
+          ${align === "right" &&
+          css`
+            justify-content: end;
+          `}
         `}
       >
         {children}
@@ -107,7 +118,6 @@ export function Calendar({ data }: Props) {
         <header
           css={css`
             display: flex;
-            height: 36px;
           `}
         >
           {data.map(({ month }) => (
@@ -167,22 +177,22 @@ export function Calendar({ data }: Props) {
               css={css`
                 display: grid;
                 grid-gap: 24px;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 margin: -8px;
                 border-bottom: 1px solid #ebedee;
               `}
             >
-              <FilterSection title="Month selected">
+              <FilterSection title="Filtered months">
                 {selectedMonths.map((i) => (
                   <div key={i.month}>{i.month}</div>
                 ))}
               </FilterSection>
-              <FilterSection title="Total docs">
+              <FilterSection title="Filtered documents">
                 {selectedMonths.map((i) => (
                   <div key={`${i.month}-${i.docs}`}>{i.docs}</div>
                 ))}
               </FilterSection>
-              <FilterSection title="Total amount">
+              <FilterSection title="Filtered amount" align="right">
                 {selectedMonths.map((i) => (
                   <div key={`${i.month}-${i.amount}`}>
                     {amountFormater.format(i.amount)}
