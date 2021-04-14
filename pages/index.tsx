@@ -77,6 +77,7 @@ const Page = () => {
         display: flex;
         justify-content: center;
         padding-top: 124px;
+        padding-bottom: 80px;
       `}
     >
       {getContent()}

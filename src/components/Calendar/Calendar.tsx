@@ -169,9 +169,6 @@ export function Calendar({ data }: Props) {
         css={css`
           background-color: #fff;
           border: 1px solid #ebedee;
-          box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.008),
-            0 12.3px 17.9px rgba(0, 0, 0, 0.012),
-            0 15px 40px rgba(0, 0, 0, 0.12);
         `}
       >
         <header
@@ -230,9 +227,6 @@ export function Calendar({ data }: Props) {
           background-color: #fff;
           padding: 24px;
           border: 1px solid #ebedee;
-          box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.008),
-            0 12.3px 17.9px rgba(0, 0, 0, 0.012),
-            0 15px 40px rgba(0, 0, 0, 0.12);
         `}
       >
         <h2
@@ -243,7 +237,6 @@ export function Calendar({ data }: Props) {
         >
           Filtered data
         </h2>
-
         <div
           css={css`
             display: grid;
