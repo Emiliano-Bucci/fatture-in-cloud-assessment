@@ -7,6 +7,7 @@ type Props = {
   docs: number;
   amount: string;
   isActive: boolean;
+  isSelected: boolean;
   percentFill?: number;
   onClick(): void;
 };
@@ -15,6 +16,7 @@ export function CalendarItem({
   docs,
   amount,
   isActive,
+  isSelected,
   onClick,
   percentFill = 0.4,
 }: Props) {
@@ -28,7 +30,7 @@ export function CalendarItem({
     delay: 240,
   });
   const styles = useSpring({
-    opacity: isActive ? 1 : 0,
+    opacity: isSelected || isActive ? 1 : 0,
   });
 
   useEffect(() => {
@@ -53,6 +55,7 @@ export function CalendarItem({
         cursor: pointer;
         z-index: 10;
         font-size: 12px;
+        user-select: none;
 
         :not(:last-of-type) {
           border-right: 1px solid #ebedee;
@@ -89,6 +92,12 @@ export function CalendarItem({
           position: absolute;
           background-color: #3197d5;
           z-index: 10;
+          transition: background-color 280ms ease;
+
+          ${isActive &&
+          css`
+            background-color: rgba(49, 151, 213, 0.64);
+          `}
         `}
       />
       <animated.div

@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useRef, HTMLDIvElement, useState } from "react";
+import { useDrag } from "react-use-gesture";
 import { CalendarHeader } from "./components/CalendarHeader";
 import { CalendarItem } from "./components/CalendarItem";
 
@@ -86,18 +87,48 @@ function TotalSection({
 }
 
 export function Calendar({ data }: Props) {
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [activeItems, setActiveItems] = useState<number[]>([]);
+  const dragWrapperRef = useRef<HTMLDIvElement | null>(null);
+  const dataLength = data.length;
+
+  const dragBind = useDrag(({ xy: [x], last, first }) => {
+    if (first) {
+      setActiveItems([]);
+      setSelectedItems([]);
+    }
+
+    const dragWrapperWidth = dragWrapperRef.current?.getBoundingClientRect()
+      .width;
+    const dragWrapperOffsetLeft = dragWrapperRef.current?.getBoundingClientRect()
+      .left;
+    const itemWidth = dragWrapperWidth / dataLength;
+    const movement = x - dragWrapperOffsetLeft;
+
+    if (movement < 0 || movement > dragWrapperWidth) {
+      return;
+    }
+    const selectedItem = Math.floor(movement / itemWidth);
+
+    if (!activeItems.includes(selectedItem)) {
+      setActiveItems((p) => [...p, selectedItem]);
+    }
+
+    if (last) {
+      setSelectedItems(activeItems);
+    }
+  });
 
   function removeActiveItem(i: number) {
-    setActiveItems((p) => p.filter((_i) => _i !== i));
+    setSelectedItems((p) => p.filter((_i) => _i !== i));
   }
 
   function addActiveItem(i: number) {
-    setActiveItems((p) => [...p, i]);
+    setSelectedItems((p) => [...p, i]);
   }
 
   const highestValue = Math.max(...data.map((v) => v.amount));
-  const selectedMonths = data.filter((_, i) => activeItems.includes(i));
+  const selectedMonths = data.filter((_, i) => selectedItems.includes(i));
 
   return (
     <div
@@ -125,26 +156,30 @@ export function Calendar({ data }: Props) {
           ))}
         </header>
         <div
+          {...dragBind()}
+          ref={dragWrapperRef}
           css={css`
             display: flex;
           `}
         >
           {data.map(({ docs, amount, month }, i) => {
-            const isActive = activeItems.includes(i);
+            const isSelected = selectedItems.includes(i);
             return (
               <CalendarItem
                 key={`${docs}-${amount}-${month}`}
                 docs={docs}
                 amount={amountFormater.format(amount)}
-                isActive={isActive}
+                isSelected={isSelected}
+                isActive={activeItems.includes(i)}
                 percentFill={Number((amount / highestValue).toFixed(2))}
-                onClick={() => {
-                  if (isActive) {
-                    removeActiveItem(i);
-                  } else {
-                    addActiveItem(i);
-                  }
-                }}
+                onClick={() => {}}
+                // onClick={() => {
+                //   if (isSelected) {
+                //     removeActiveItem(i);
+                //   } else {
+                //     addActiveItem(i);
+                //   }
+                // }}
               />
             );
           })}
