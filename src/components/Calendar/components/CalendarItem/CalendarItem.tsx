@@ -9,7 +9,6 @@ type Props = {
   isActive: boolean;
   isSelected: boolean;
   percentFill?: number;
-  onClick(): void;
 };
 
 export function CalendarItem({
@@ -17,7 +16,6 @@ export function CalendarItem({
   amount,
   isActive,
   isSelected,
-  onClick,
   percentFill = 0.4,
 }: Props) {
   const percentFillStyles = useSpring({
@@ -43,7 +41,6 @@ export function CalendarItem({
 
   return (
     <div
-      onClick={onClick}
       css={css`
         display: grid;
         align-content: end;
@@ -95,6 +92,7 @@ export function CalendarItem({
           transition: background-color 280ms ease;
 
           ${isActive &&
+          !isSelected &&
           css`
             background-color: rgba(49, 151, 213, 0.64);
           `}

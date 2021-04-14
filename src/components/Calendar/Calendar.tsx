@@ -92,40 +92,43 @@ export function Calendar({ data }: Props) {
   const dragWrapperRef = useRef<HTMLDIvElement | null>(null);
   const dataLength = data.length;
 
-  const dragBind = useDrag(({ xy: [x], last, first }) => {
-    if (first) {
-      setActiveItems([]);
-      setSelectedItems([]);
-    }
-
+  const dragBind = useDrag(({ xy: [x], last, first, distance }) => {
     const dragWrapperWidth = dragWrapperRef.current?.getBoundingClientRect()
       .width;
     const dragWrapperOffsetLeft = dragWrapperRef.current?.getBoundingClientRect()
       .left;
     const itemWidth = dragWrapperWidth / dataLength;
     const movement = x - dragWrapperOffsetLeft;
+    const selectedItem = Math.floor(movement / itemWidth);
+
+    if (first && distance === 0) {
+      setActiveItems([selectedItem]);
+      setSelectedItems([]);
+      return;
+    }
+
+    if (last && distance === 0) {
+      if (selectedItems.includes(selectedItem)) {
+      } else {
+        setSelectedItems([selectedItem]);
+      }
+
+      return;
+    }
 
     if (movement < 0 || movement > dragWrapperWidth) {
       return;
     }
-    const selectedItem = Math.floor(movement / itemWidth);
 
     if (!activeItems.includes(selectedItem)) {
       setActiveItems((p) => [...p, selectedItem]);
     }
 
     if (last) {
+      setActiveItems([]);
       setSelectedItems(activeItems);
     }
   });
-
-  function removeActiveItem(i: number) {
-    setSelectedItems((p) => p.filter((_i) => _i !== i));
-  }
-
-  function addActiveItem(i: number) {
-    setSelectedItems((p) => [...p, i]);
-  }
 
   const highestValue = Math.max(...data.map((v) => v.amount));
   const selectedMonths = data.filter((_, i) => selectedItems.includes(i));
@@ -172,14 +175,6 @@ export function Calendar({ data }: Props) {
                 isSelected={isSelected}
                 isActive={activeItems.includes(i)}
                 percentFill={Number((amount / highestValue).toFixed(2))}
-                onClick={() => {}}
-                // onClick={() => {
-                //   if (isSelected) {
-                //     removeActiveItem(i);
-                //   } else {
-                //     addActiveItem(i);
-                //   }
-                // }}
               />
             );
           })}
