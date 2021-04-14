@@ -155,6 +155,7 @@ export function Calendar({ data }: Props) {
           padding: 12px 16px;
           transition: all 220ms ease;
           font-weight: 600;
+          border: 1px solid #ebedee;
 
           :hover,
           :focus {
@@ -169,8 +170,8 @@ export function Calendar({ data }: Props) {
           background-color: #fff;
           border: 1px solid #ebedee;
           box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.008),
-            0 22.3px 17.9px rgba(0, 0, 0, 0.012),
-            0 100px 80px rgba(0, 0, 0, 0.02);
+            0 12.3px 17.9px rgba(0, 0, 0, 0.012),
+            0 15px 40px rgba(0, 0, 0, 0.12);
         `}
       >
         <header
@@ -228,9 +229,10 @@ export function Calendar({ data }: Props) {
           grid-gap: 16px;
           background-color: #fff;
           padding: 24px;
+          border: 1px solid #ebedee;
           box-shadow: 0 6.7px 5.3px rgba(0, 0, 0, 0.008),
-            0 22.3px 17.9px rgba(0, 0, 0, 0.012),
-            0 100px 80px rgba(0, 0, 0, 0.02);
+            0 12.3px 17.9px rgba(0, 0, 0, 0.012),
+            0 15px 40px rgba(0, 0, 0, 0.12);
         `}
       >
         <h2

@@ -149,7 +149,7 @@ export const globalStyles = css`
       "Segoe UI Symbol";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f0f4f8;
+    background-color: rgba(240, 244, 248, 0.1);
   }
 
   strong {
