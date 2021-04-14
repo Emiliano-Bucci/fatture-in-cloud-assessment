@@ -147,6 +147,21 @@ export function Calendar({ data }: Props) {
       css={css`
         display: grid;
         grid-gap: 40px;
+
+        button {
+          cursor: pointer;
+          background-color: #fff;
+          border: none;
+          padding: 12px 16px;
+          transition: all 220ms ease;
+          font-weight: 600;
+
+          :hover,
+          :focus {
+            background-color: #3197d5;
+            color: #fff;
+          }
+        }
       `}
     >
       <div
@@ -197,6 +212,19 @@ export function Calendar({ data }: Props) {
       <div
         css={css`
           display: grid;
+          grid-auto-flow: column;
+          justify-content: end;
+          grid-gap: 16px;
+        `}
+      >
+        <button onClick={() => setSelectedItems([])}>RESET</button>
+        <button onClick={() => setSelectedItems(data.map((_, i) => i))}>
+          SELECT ALL
+        </button>
+      </div>
+      <div
+        css={css`
+          display: grid;
           grid-gap: 16px;
           background-color: #fff;
           padding: 24px;
@@ -214,56 +242,60 @@ export function Calendar({ data }: Props) {
           Filtered data
         </h2>
 
-        {selectedMonths.length === 0 && <div>No data selected</div>}
-        {selectedMonths.length > 0 && (
-          <>
-            <div
-              css={css`
-                display: grid;
-                grid-gap: 24px;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                margin: -8px;
-                border-bottom: 1px solid #ebedee;
-              `}
-            >
-              <FilterSection title="Filtered months">
-                {selectedMonths.map((i) => (
-                  <div key={i.month}>{i.month}</div>
-                ))}
-              </FilterSection>
-              <FilterSection title="Filtered documents">
-                {selectedMonths.map((i) => (
-                  <div key={`${i.month}-${i.docs}`}>{i.docs}</div>
-                ))}
-              </FilterSection>
-              <FilterSection title="Filtered amount" align="right">
-                {selectedMonths.map((i) => (
-                  <div key={`${i.month}-${i.amount}`}>
-                    {amountFormater.format(i.amount)}
-                  </div>
-                ))}
-              </FilterSection>
-            </div>
-            <div
-              css={css`
-                display: grid;
-                grid-auto-flow: column;
-                grid-gap: 16px;
-              `}
-            >
-              <TotalSection
-                label="Total documents:"
-                value={selectedMonths.reduce((acc, i) => acc + i.docs, 0)}
-              />
-              <TotalSection
-                label="Total amount:"
-                value={amountFormater.format(
-                  selectedMonths.reduce((acc, i) => acc + i.amount, 0)
-                )}
-              />
-            </div>
-          </>
-        )}
+        <div
+          css={css`
+            display: grid;
+            grid-gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin: -8px;
+            border-bottom: 1px solid #ebedee;
+          `}
+        >
+          <FilterSection title="Filtered months">
+            {selectedMonths.length > 0 ? (
+              selectedMonths.map((i) => <div key={i.month}>{i.month}</div>)
+            ) : (
+              <span>-</span>
+            )}
+          </FilterSection>
+          <FilterSection title="Filtered documents">
+            {selectedMonths.length > 0 ? (
+              selectedMonths.map((i) => (
+                <div key={`${i.month}-${i.docs}`}>{i.docs}</div>
+              ))
+            ) : (
+              <span>-</span>
+            )}
+          </FilterSection>
+          <FilterSection title="Filtered amount" align="right">
+            {selectedMonths.length > 0 ? (
+              selectedMonths.map((i) => (
+                <div key={`${i.month}-${i.amount}`}>
+                  {amountFormater.format(i.amount)}
+                </div>
+              ))
+            ) : (
+              <span>-</span>
+            )}
+          </FilterSection>
+        </div>
+        <div
+          css={css`
+            display: grid;
+            grid-gap: 8px;
+          `}
+        >
+          <TotalSection
+            label="Total documents:"
+            value={selectedMonths.reduce((acc, i) => acc + i.docs, 0)}
+          />
+          <TotalSection
+            label="Total amount:"
+            value={amountFormater.format(
+              selectedMonths.reduce((acc, i) => acc + i.amount, 0)
+            )}
+          />
+        </div>
       </div>
     </div>
   );
