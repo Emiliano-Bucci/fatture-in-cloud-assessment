@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { useRef, HTMLDIvElement, useState } from "react";
+import { useRef, useState } from "react";
 import { useDrag } from "react-use-gesture";
 import { CalendarHeader } from "./components/CalendarHeader";
 import { CalendarItem } from "./components/CalendarItem";
@@ -89,49 +89,58 @@ function TotalSection({
 export function Calendar({ data }: Props) {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [activeItems, setActiveItems] = useState<number[]>([]);
-  const dragWrapperRef = useRef<HTMLDIvElement | null>(null);
+  const dragWrapperRef = useRef<HTMLDivElement | null>(null);
   const dataLength = data.length;
+  const wasDragging = useRef(false);
+  const prevSelectedItem = useRef<number | null>(null);
 
-  const dragBind = useDrag(({ xy: [x], last, first, distance }) => {
-    const dragWrapperWidth = dragWrapperRef.current?.getBoundingClientRect()
-      .width;
-    const dragWrapperOffsetLeft = dragWrapperRef.current?.getBoundingClientRect()
-      .left;
-    const itemWidth = dragWrapperWidth / dataLength;
-    const movement = x - dragWrapperOffsetLeft;
-    const selectedItem = Math.floor(movement / itemWidth);
+  const dragBind = useDrag(
+    ({ xy: [x], last }) => {
+      const dragWrapperWidth =
+        dragWrapperRef.current?.getBoundingClientRect().width ?? 0;
+      const dragWrapperOffsetLeft =
+        dragWrapperRef.current?.getBoundingClientRect().left ?? 0;
+      const itemWidth = dragWrapperWidth / dataLength;
+      const movement = x - dragWrapperOffsetLeft;
+      const selectedItem = Math.floor(movement / itemWidth);
+      wasDragging.current = true;
 
-    if (first && distance === 0) {
-      setActiveItems([selectedItem]);
-      setSelectedItems([]);
-      return;
-    }
-
-    if (last && distance === 0) {
-      if (selectedItems.includes(selectedItem)) {
-      } else {
-        setSelectedItems([selectedItem]);
+      if (movement < 0 || movement > dragWrapperWidth) {
+        return;
       }
 
-      return;
-    }
+      if (!activeItems.includes(selectedItem)) {
+        setActiveItems((p) => [...p, selectedItem]);
+      }
 
-    if (movement < 0 || movement > dragWrapperWidth) {
-      return;
+      if (last) {
+        setActiveItems([]);
+        setSelectedItems(activeItems);
+      }
+    },
+    {
+      threshold: 10,
     }
-
-    if (!activeItems.includes(selectedItem)) {
-      setActiveItems((p) => [...p, selectedItem]);
-    }
-
-    if (last) {
-      setActiveItems([]);
-      setSelectedItems(activeItems);
-    }
-  });
+  );
 
   const highestValue = Math.max(...data.map((v) => v.amount));
   const selectedMonths = data.filter((_, i) => selectedItems.includes(i));
+
+  function handleOnCalendarItemClick(i: number) {
+    if (wasDragging.current) {
+      wasDragging.current = false;
+      return;
+    }
+
+    if (prevSelectedItem.current === i) {
+      setSelectedItems([]);
+      setActiveItems([]);
+      prevSelectedItem.current = null;
+    } else if (prevSelectedItem.current !== i) {
+      setSelectedItems([i]);
+      prevSelectedItem.current = i;
+    }
+  }
 
   return (
     <div
@@ -175,6 +184,11 @@ export function Calendar({ data }: Props) {
                 isSelected={isSelected}
                 isActive={activeItems.includes(i)}
                 percentFill={Number((amount / highestValue).toFixed(2))}
+                onClick={() => handleOnCalendarItemClick(i)}
+                onMouseDown={() => {
+                  setActiveItems([i]);
+                  setSelectedItems([]);
+                }}
               />
             );
           })}

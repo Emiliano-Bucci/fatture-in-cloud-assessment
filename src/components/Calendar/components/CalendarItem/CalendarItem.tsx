@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { useSpring } from "@react-spring/core";
 import { animated } from "@react-spring/web";
-import { useEffect } from "react";
+import { HTMLAttributes, useEffect } from "react";
 
 type Props = {
   docs: number;
@@ -9,7 +9,7 @@ type Props = {
   isActive: boolean;
   isSelected: boolean;
   percentFill?: number;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export function CalendarItem({
   docs,
@@ -17,6 +17,7 @@ export function CalendarItem({
   isActive,
   isSelected,
   percentFill = 0.4,
+  ...rest
 }: Props) {
   const percentFillStyles = useSpring({
     from: {
@@ -58,6 +59,7 @@ export function CalendarItem({
           border-right: 1px solid #ebedee;
         }
       `}
+      {...rest}
     >
       <span
         css={css`
